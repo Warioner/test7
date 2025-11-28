@@ -26,8 +26,9 @@ def test_successful_login(driver):
     time.sleep(2)
     driver.find_element(By.ID, "username").send_keys("root")
     driver.find_element(By.ID, "password").send_keys("0penBmc") 
+    time.sleep(2)
     driver.find_element(By.XPATH, "//button[@type='submit']").click()
-    time.sleep(5)
+    time.sleep(10)
 
     assert "login" not in driver.current_url, "Авторизация не удалась"
 
