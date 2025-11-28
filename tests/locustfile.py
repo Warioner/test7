@@ -1,29 +1,21 @@
 from locust import HttpUser, task, between
-import json
-
+import urllib3
+urllib3.disable_warnings() 
 
 class OpenBMCUser(HttpUser):
-
     host = "https://localhost:2443"
     wait_time = between(2, 5)
 
     def on_start(self):
-
-        auth_response = self.client.post(
-            "/redfish/v1/SessionService/Sessions",
-            json={"UserName": "root", "Password": "0penBmc"},
-            verify=False
-        )
-
-        if auth_response.status_code in [200, 201]:
-            token = auth_response.headers.get("X-Auth-Token")
-            if token:
-                self.client.headers["X-Auth-Token"] = token
-                print(f"Успешная аутентификация, токен получен")
+            auth_response = self.client.post(
+                "/redfish/v1/SessionService/Sessions",
+                json={"UserName": "root", "Password": "0penBmc"},
+                verify=False,
+            )
+            if auth_response.status_code in [200, 201]:
+                self.client.headers["X-Auth-Token"]  = auth_response.headers.get("X-Auth-Token")
             else:
-                print("Ошибка: токен не получен")
-        else:
-            print(f"Ошибка аутентификации: {auth_response.status_code}")
+                print(f"Ошибка аутентификации: {auth_response.status_code}")
 
     @task(3)
     def get_system_info(self):
@@ -34,14 +26,11 @@ class OpenBMCUser(HttpUser):
                 name="Get System Info"
         ) as response:
             if response.status_code == 200:
-                try:
                     system_data = response.json()
                     if "Id" in system_data and "Status" in system_data:
                         response.success()
                     else:
-                        response.failure("Неполные данные в ответе")
-                except ValueError:
-                    response.failure("Невалидный JSON в ответе")
+                        response.failure("Неполные данные системы")
             else:
                 response.failure(f"HTTP {response.status_code}")
 
@@ -51,7 +40,7 @@ class OpenBMCUser(HttpUser):
                 "/redfish/v1/Systems/system",
                 verify=False,
                 catch_response=True,
-                name="Get Power State"
+                name="Get PowerState"
         ) as response:
             if response.status_code == 200:
                 try:
@@ -66,7 +55,6 @@ class OpenBMCUser(HttpUser):
                     response.failure("Невалидный JSON в ответе")
             else:
                 response.failure(f"HTTP {response.status_code}")
-
 
 # class JSONPlaceholderUser(HttpUser):
 #     host = "https://jsonplaceholder.typicode.com"
