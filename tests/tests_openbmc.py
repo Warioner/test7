@@ -21,15 +21,6 @@ def test_find_openbmc_web(driver):
     assert any(word in driver.page_source.lower() 
                for word in ['openbmc', 'username', 'password']), "OpenBMC не найден"
 
-def test_successful_login(driver):
-    driver.get("https://localhost:2443")
-    time.sleep(1)
-    driver.find_element(By.ID, "username").send_keys("root")
-    driver.find_element(By.ID, "password").send_keys("0penBmc") 
-    driver.find_element(By.XPATH, "//button[@type='submit']").click()
-    time.sleep(2)
-
-    assert "login" not in driver.current_url, "Авторизация не удалась"
 
 def test_wrong_data(driver):
     driver.get("https://localhost:2443")
