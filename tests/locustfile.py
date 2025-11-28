@@ -34,23 +34,6 @@ class OpenBMCUser(HttpUser):
             else:
                 response.failure(f"HTTP {response.status_code}")
 
-    @task(2)
-    def get_power_state(self):
-        with self.client.get(
-                "/redfish/v1/Chassis/chassis",
-                verify=False,
-                catch_response=True,
-                name="Get PowerState"
-        ) as response:
-            if response.status_code == 200:
-                    chassis_data = response.json()
-                    if "PowerState" in chassis_data:
-                        response.success()
-                    else:
-                        response.failure("Нет PowerState в ответе")
-            else:
-                response.failure(f"HTTP {response.status_code}")
-
 # class JSONPlaceholderUser(HttpUser):
 #     host = "https://jsonplaceholder.typicode.com"
 #     wait_time = between(1, 3)
