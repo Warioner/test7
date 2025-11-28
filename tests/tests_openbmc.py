@@ -34,10 +34,10 @@ def test_successful_login(driver):
 
 def test_wrong_data(driver):
     driver.get("https://localhost:2443")
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element(By.ID, "username").send_keys("null")
     driver.find_element(By.ID, "password").send_keys("null") 
-    time.sleep(2)
+    time.sleep(4)
     driver.find_element(By.XPATH, "//button[@type='submit']").click()
     time.sleep(10)
 
@@ -46,6 +46,7 @@ def test_wrong_data(driver):
 def test_account_block(driver):
     for i in range(3):
         driver.get("https://localhost:2443")
+        time.sleep(2)
         driver.find_element(By.ID, "username").send_keys("testuser")
         driver.find_element(By.ID, "password").send_keys("i")
         time.sleep(2)
@@ -54,6 +55,7 @@ def test_account_block(driver):
         assert "login" in driver.current_url
 
     driver.get("https://localhost:2443")
+    time.sleep(2)
     driver.find_element(By.ID, "username").send_keys("testuser")
     driver.find_element(By.ID, "password").send_keys("TestPass123")
     time.sleep(2)
@@ -81,6 +83,7 @@ def test_temperature_redfish(driver):
 
 def test_power_control(driver):
     driver.get("https://localhost:2443")
+    time.sleep(2)   
     driver.find_element(By.ID, "username").send_keys("root")
     driver.find_element(By.ID, "password").send_keys("0penBmc") 
     time.sleep(2)
