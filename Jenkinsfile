@@ -65,7 +65,7 @@ pipeline {
                         fi
                         
                         echo "Быстрая проверка OpenBMC (максимум 30 секунд)..."
-                        timeout=30
+                        timeout=60
                         elapsed=0
                         interval=3
                         while ! curl -k --silent --output /dev/null --connect-timeout 2 --max-time 3 https://localhost:2443/redfish/v1; do
